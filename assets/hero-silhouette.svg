@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- Film grain filter -->
+    <filter id="film-grain" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" result="noise" />
+      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.08 0" result="coloredNoise"/>
+      <feComposite in="SourceGraphic" in2="coloredNoise" operator="over" />
+    </filter>
+
+    <!-- Crimson atmospheric gradients -->
+    <radialGradient id="crimsonAtmosphere" cx="75%" cy="45%" r="65%">
+      <stop offset="0%" stop-color="#b62b1a" stop-opacity="0.95" />
+      <stop offset="35%" stop-color="#7a140a" stop-opacity="0.8" />
+      <stop offset="70%" stop-color="#2a0402" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="1" />
+    </radialGradient>
+
+    <radialGradient id="rimLight" cx="42%" cy="48%" r="40%">
+      <stop offset="0%" stop-color="#ff4d36" stop-opacity="0.6" />
+      <stop offset="50%" stop-color="#b62b1a" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+
+    <linearGradient id="hairlineFalloff" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.0" />
+    </linearGradient>
+
+    <!-- Gaussian blur for soft shadow and light diffusion -->
+    <filter id="crimsonGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="60" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Deep Canvas Base -->
+  <rect width="1920" height="1080" fill="#000000" />
+
+  <!-- Crimson Heat Light Sphere (single-source light from right) -->
+  <rect width="1920" height="1080" fill="url(#crimsonAtmosphere)" />
+
+  <!-- Volumetric Light Beam -->
+  <path d="M1200 -200 L1920 400 L1920 1080 L800 1080 Z" fill="#b62b1a" opacity="0.25" filter="url(#crimsonGlow)" />
+
+  <!-- Secondary rim light halo -->
+  <circle cx="700" cy="500" r="450" fill="url(#rimLight)" />
+
+  <!-- Editorial Silhouette Figure (High fashion model, profile/three-quarter, left-aligned) -->
+  <g id="figure-silhouette" transform="translate(180, 40)">
+    <!-- Flowing fabric trailing in motion (Crimson sheen) -->
+    <path d="M420 540 C 580 480, 720 520, 880 430 C 760 620, 680 780, 520 860 Z" 
+          fill="#801006" opacity="0.6" filter="url(#crimsonGlow)" />
+    <path d="M390 520 C 520 440, 680 470, 790 380 C 710 560, 610 710, 480 810 Z" 
+          fill="#b62b1a" opacity="0.4" />
+
+    <!-- Main Silhouette (crushed black void with crimson rim light) -->
+    <!-- Head and neck in profile facing right -->
+    <path d="M410 180 
+             C 410 120, 460 70, 520 70 
+             C 570 70, 600 100, 610 140 
+             C 615 160, 625 180, 640 195 
+             C 630 205, 615 210, 610 225 
+             C 605 240, 620 255, 625 270 
+             C 610 280, 595 285, 590 300 
+             C 580 325, 595 360, 580 390 
+             C 565 420, 530 450, 510 470
+             L 530 650
+             C 550 780, 580 940, 600 1050
+             L 260 1050
+             C 280 880, 310 700, 340 540
+             C 320 480, 310 400, 320 330
+             C 325 290, 340 250, 360 210
+             C 380 180, 400 170, 410 180 Z" 
+          fill="#020101" />
+
+    <!-- Sharp rim light edge on silhouette (carved by crimson light) -->
+    <path d="M520 70 
+             C 570 70, 600 100, 610 140 
+             C 615 160, 625 180, 640 195 
+             C 630 205, 615 210, 610 225 
+             C 605 240, 620 255, 625 270 
+             C 610 280, 595 285, 590 300 
+             C 580 325, 595 360, 580 390 
+             C 565 420, 530 450, 510 470
+             L 530 650" 
+          stroke="#ff4d36" stroke-width="2.5" fill="none" opacity="0.85" />
+
+    <!-- Trailing hair in motion -->
+    <path d="M420 140 C 320 130, 240 170, 160 250 C 220 210, 300 190, 390 190 Z" 
+          fill="#000000" opacity="0.9" />
+    <path d="M410 160 C 290 170, 210 230, 120 320 C 190 260, 290 220, 380 210 Z" 
+          fill="#b62b1a" opacity="0.3" />
+  </g>
+
+  <!-- Editorial Typography Watermark (Subtle ghost geometry) -->
+  <text x="1860" y="980" font-family="'Saans', 'Inter', sans-serif" font-size="280" font-weight="300" fill="#ffffff" opacity="0.03" text-anchor="end" letter-spacing="-8">
+    21|TSI
+  </text>
+
+  <!-- Fine grid & alignment hairlines -->
+  <line x1="80" y1="0" x2="80" y2="1080" stroke="#ffffff" stroke-width="0.5" opacity="0.08" />
+  <line x1="1840" y1="0" x2="1840" y2="1080" stroke="#ffffff" stroke-width="0.5" opacity="0.08" />
+
+  <!-- Organic Grain Texture Overlay -->
+  <rect width="1920" height="1080" fill="#ffffff" filter="url(#film-grain)" opacity="0.4" pointer-events="none" mix-blend-mode="overlay" />
+</svg>
