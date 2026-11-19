@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1300" width="100%" height="100%">
+  <defs>
+    <radialGradient id="look2Grad" cx="30%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#b62b1a" stop-opacity="1" />
+      <stop offset="50%" stop-color="#4d0b04" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#020202" stop-opacity="1" />
+    </radialGradient>
+    <filter id="blurLook">
+      <feGaussianBlur stdDeviation="30" />
+    </filter>
+  </defs>
+  <rect width="1000" height="1300" fill="#000000" />
+  <rect width="1000" height="1300" fill="url(#look2Grad)" />
+  <!-- Swirling crimson dress in full motion -->
+  <path d="M300 200 C500 280, 700 180, 850 400 C920 550, 750 900, 820 1300 L200 1300 C150 1000, 220 700, 180 500 C150 350, 220 220, 300 200 Z" fill="#140201" />
+  <path d="M400 350 C650 450, 780 600, 720 900 C650 1100, 520 1250, 400 1300 Z" fill="#b62b1a" opacity="0.5" filter="url(#blurLook)" />
+  <!-- Model silhouette profile -->
+  <path d="M360 160 C380 140, 420 140, 440 180 C455 210, 450 250, 430 280 C400 310, 360 300, 350 260 C340 220, 345 180, 360 160 Z" fill="#000000" stroke="#ff6b55" stroke-width="1.5" />
+  <path d="M430 280 L480 390 L420 600 L320 400 Z" fill="#050101" />
+  <line x1="60" y1="60" x2="60" y2="1240" stroke="#ffffff" stroke-width="0.5" opacity="0.2" />
+  <text x="80" y="1220" font-family="'Inter', sans-serif" font-size="14" font-weight="300" fill="#ffffff" letter-spacing="3" opacity="0.7">LOOK 02 — CRIMSON DRAPE</text>
+  <text x="80" y="1240" font-family="'Inter', sans-serif" font-size="11" font-weight="300" fill="#ffffff" letter-spacing="1" opacity="0.4">KINETIC SILK CHIFFON</text>
+</svg>
