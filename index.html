@@ -375,10 +375,10 @@
 
       <!-- Controles de Utilidade -->
       <div class="flex items-center gap-3">
-        <!-- BOTÃO DE SOM INFINITO E CONFIÁVEL -->
-        <button id="soundToggleBtn" class="ghost-pill !py-1.5 !px-3.5 text-[10px]" aria-label="Alternar trilha atmosférica infinita">
+        <!-- BOTÃO DE SOM INSTRUMENTAL INFINITO -->
+        <button id="soundToggleBtn" class="ghost-pill !py-1.5 !px-3.5 text-[10px]" aria-label="Alternar trilha sonora instrumental">
           <span id="soundIndicator" class="w-2 h-2 rounded-full bg-white/40"></span>
-          <span id="soundLabel">SOM DESATIVADO</span>
+          <span id="soundLabel">SOM INSTRUMENTAL (OFF)</span>
         </button>
 
         <a href="#atelier" class="hidden sm:inline-flex ghost-pill !py-1.5 !px-4 text-[10px]">
@@ -615,13 +615,31 @@
             </div>
           </div>
 
+          <!-- Card 3: Gráfico Real e Interativo de Produção & Demanda -->
           <div class="glass-card rounded-xl p-6 flex flex-col justify-between">
             <div>
-              <span class="text-[10px] uppercase tracking-caption text-white/50 block mb-2">SIMULAÇÃO DE ONDULAÇÃO</span>
-              <p class="text-xs text-white/60 font-light mb-3">Balanço do vestido em resposta à passada de 120 passos/minuto.</p>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[10px] uppercase tracking-caption text-white/50 block">MÉTRICAS DO ATELIER</span>
+                <span id="chartActiveFilter" class="text-[9px] uppercase px-2 py-0.5 rounded bg-crimson-heat/40 text-crimson-bright border border-crimson-bright/40 font-mono">DEMANDA MENSAL</span>
+              </div>
+              
+              <!-- Filtros Funcionais do Gráfico -->
+              <div class="flex gap-1.5 mb-3">
+                <button onclick="setChartMode('demanda')" id="chartBtn-demanda" class="text-[10px] uppercase px-2.5 py-1 rounded bg-white text-black font-semibold transition-all">Demanda</button>
+                <button onclick="setChartMode('horas')" id="chartBtn-horas" class="text-[10px] uppercase px-2.5 py-1 rounded bg-white/10 text-white/70 hover:bg-white/20 transition-all">Horas Atelier</button>
+                <button onclick="setChartMode('fibras')" id="chartBtn-fibras" class="text-[10px] uppercase px-2.5 py-1 rounded bg-white/10 text-white/70 hover:bg-white/20 transition-all">Composição</button>
+              </div>
             </div>
-            <div class="w-full h-24 bg-black/60 rounded-lg border border-white/10 flex items-center justify-center p-2">
-              <canvas id="motionCanvas" width="300" height="80" class="w-full h-full block"></canvas>
+
+            <!-- Canvas Gráfico Interativo com Tooltip -->
+            <div class="relative w-full h-28 bg-black/80 rounded-lg border border-white/10 p-2 overflow-hidden flex items-center justify-center">
+              <canvas id="telemetryChart" width="340" height="100" class="w-full h-full block cursor-crosshair"></canvas>
+              <div id="chartTooltip" class="hidden absolute pointer-events-none bg-black/95 border border-crimson-bright text-[10px] text-white px-2 py-1 rounded shadow-2xl font-mono z-30 transition-opacity"></div>
+            </div>
+
+            <div class="pt-3 border-t border-white/10 flex justify-between items-center text-[10px] text-white/50 mt-3">
+              <span id="chartFooterText">12 PEÇAS EXCLUSIVAS (PARIS)</span>
+              <span class="text-emerald-400 font-mono">ATELIER ATIVO</span>
             </div>
           </div>
         </div>
@@ -1098,27 +1116,29 @@
   </footer>
 
   <!-- ====================================================================
-       8. MODAL DE INSPEÇÃO DO LOOK
+       8. MODAL DE INSPEÇÃO DO LOOK (IMAGEM CRISTALINA & ESPECIFICAÇÃO)
        ==================================================================== -->
   <div id="lookModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
-    <div class="relative w-full max-w-4xl bg-black border border-white/20 rounded-xl overflow-hidden flex flex-col md:flex-row max-h-[85vh] shadow-2xl">
+    <div class="relative w-full max-w-4xl bg-black border border-white/20 rounded-xl overflow-hidden flex flex-col md:flex-row max-h-[90vh] shadow-2xl">
       <button onclick="closeLookModal()" class="absolute top-4 right-4 z-20 ghost-pill !py-1 !px-3 text-xs bg-black/80">FECHAR ✕</button>
-      <div class="w-full md:w-1/2 p-6 flex items-center justify-center bg-neutral-950 border-b md:border-b-0 md:border-r border-white/10">
-        <img id="modalLookImg" src="" alt="Look 21 TSI" class="max-h-[60vh] object-contain rounded">
+      <div class="w-full md:w-1/2 p-4 sm:p-6 flex items-center justify-center bg-neutral-950 border-b md:border-b-0 md:border-r border-white/10 min-h-[300px]">
+        <div class="relative w-full h-[300px] sm:h-[420px] rounded-lg overflow-hidden flex items-center justify-center bg-black/50 border border-white/10">
+          <img id="modalLookImg" src="" alt="Look 21 TSI" class="w-full h-full object-cover rounded shadow-2xl transition-all duration-300">
+        </div>
       </div>
-      <div class="w-full md:w-1/2 p-8 flex flex-col justify-between overflow-y-auto">
+      <div class="w-full md:w-1/2 p-6 sm:p-8 flex flex-col justify-between overflow-y-auto">
         <div>
           <span class="text-xs uppercase tracking-widest text-crimson-bright block mb-1">ESPECIFICAÇÃO DE ALTA-COSTURA</span>
           <h3 id="modalLookTitle" class="text-2xl font-light font-editorial uppercase text-white mb-3"></h3>
           <p id="modalLookDesc" class="text-xs text-white/70 font-light leading-relaxed mb-6"></p>
           <div class="space-y-3 border-t border-b border-white/10 py-4 text-xs">
-            <div class="flex justify-between"><span class="text-white/40">MATERIAL:</span><span id="modalLookMaterial" class="text-white"></span></div>
+            <div class="flex justify-between"><span class="text-white/40">MATERIAL:</span><span id="modalLookMaterial" class="text-white font-medium"></span></div>
             <div class="flex justify-between"><span class="text-white/40">INVESTIMENTO:</span><span id="modalLookPreco" class="text-white font-mono font-medium"></span></div>
-            <div class="flex justify-between"><span class="text-white/40">CONFECÇÃO:</span><span class="text-white">160 HORAS DE ATELIER</span></div>
+            <div class="flex justify-between"><span class="text-white/40">CONFECÇÃO:</span><span class="text-white font-medium">160 HORAS DE ATELIER</span></div>
           </div>
         </div>
         <div class="pt-6">
-          <button onclick="alert('Solicitação de prova registrada no Atelier 21|TSI!'); closeLookModal();" class="ghost-pill !bg-white !text-black !font-semibold w-full justify-center !py-3">
+          <button onclick="alert('Solicitação de prova registrada no Atelier 21|TSI!'); closeLookModal();" class="ghost-pill !bg-white !text-black !font-semibold w-full justify-center !py-3 hover:!bg-white/90">
             AGENDAR PROVA DESTA PEÇA
           </button>
         </div>
@@ -1150,35 +1170,39 @@
        10. SCRIPTS NATIVOS SUPER RÁPIDOS & ANIMAÇÕES MOTION COMPLETAS
        ==================================================================== -->
   <script>
-    // Dados dos Looks com imagens seguras
+    // Dados dos Looks com imagens fotográficas e fallback seguro
     const looksData = {
       1: {
         title: "LOOK 01 — SOBRETUDO DO VAZIO",
         desc: "Casaco trespassado com lapelas pontiagudas, corte a laser e forro escarlate em seda de Lyon.",
         material: "Cashmere Italiano 450g & Seda Pura",
         preco: "€ 4.800",
-        img: "assets/look-01.svg"
+        photo: "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=900&auto=format&fit=crop",
+        fallback: "assets/look-01.svg"
       },
       2: {
         title: "LOOK 02 — VESTIDO DRAPEADO CARMIM",
         desc: "Vestido fluido de gala com drapeado tridimensional e barra com corte em viés de alta fluidez.",
         material: "Seda Mulberry Chiffon 100%",
         preco: "€ 6.200",
-        img: "assets/look-02.svg"
+        photo: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=900&auto=format&fit=crop",
+        fallback: "assets/look-02.svg"
       },
       3: {
         title: "LOOK 03 — SMOKING OBSIDIANA",
         desc: "Ombros pagode inspirados na arquitetura brutalista, cintura demarcada e caimento com sombra profunda.",
         material: "Crepe de Lã Estruturado",
         preco: "€ 5.100",
-        img: "assets/look-03.svg"
+        photo: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=900&auto=format&fit=crop",
+        fallback: "assets/look-03.svg"
       },
       4: {
         title: "LOOK 04 — CORPETE CROMO LÍQUIDO",
         desc: "Carapaça esculpida em metal maleável sobre tule de seda preta. Profundidade tridimensional tátil.",
         material: "Látex Cromado & Tule de Seda",
         preco: "€ 7.500",
-        img: "assets/look-04.svg"
+        photo: "https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=900&auto=format&fit=crop",
+        fallback: "assets/look-04.svg"
       }
     };
 
@@ -1260,10 +1284,20 @@
       });
     }
 
-    // Modais
+    // Modais com Imagem Sempre Visível e Fallback Automático
     function openLookModal(id) {
       const look = looksData[id];
-      document.getElementById('modalLookImg').src = look.img;
+      const imgEl = document.getElementById('modalLookImg');
+      imgEl.style.opacity = '0.3';
+      imgEl.onerror = function() {
+        this.onerror = null;
+        this.src = look.fallback;
+        this.style.opacity = '1';
+      };
+      imgEl.onload = function() {
+        this.style.opacity = '1';
+      };
+      imgEl.src = look.photo;
       document.getElementById('modalLookTitle').textContent = look.title;
       document.getElementById('modalLookDesc').textContent = look.desc;
       document.getElementById('modalLookMaterial').textContent = look.material;
@@ -1293,88 +1327,308 @@
       e.target.reset();
     }
 
-    // Canvas de Ondulação
-    const motionCanvas = document.getElementById('motionCanvas');
-    if (motionCanvas) {
-      const ctx = motionCanvas.getContext('2d');
-      let t = 0;
-      let isVisible = true;
-
-      const observer = new IntersectionObserver(([entry]) => {
-        isVisible = entry.isIntersecting;
-      });
-      observer.observe(motionCanvas);
-
-      function drawWave() {
-        if (isVisible) {
-          ctx.clearRect(0, 0, motionCanvas.width, motionCanvas.height);
-          ctx.strokeStyle = '#b62b1a';
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          const midY = motionCanvas.height / 2;
-          for (let x = 0; x < motionCanvas.width; x += 3) {
-            const y = midY + Math.sin(x * 0.04 + t) * (currentCaimento * 0.22);
-            if (x === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-          }
-          ctx.stroke();
-          t += 0.04;
-        }
-        requestAnimationFrame(drawWave);
+    // ====================================================================
+    // GRÁFICO FUNCIONAL E INTERATIVO DE MÉTRICAS DO ATELIER
+    // ====================================================================
+    const chartDatasets = {
+      demanda: {
+        badge: "DEMANDA MENSAL",
+        footer: "TOTAL DA CÁPSULA: 120 PEÇAS EXCLUSIVAS",
+        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+        values: [18, 24, 32, 40, 28, 35],
+        max: 45,
+        unit: ' pedidos',
+        color: '#b62b1a'
+      },
+      horas: {
+        badge: "HORAS DE ATELIER",
+        footer: "TOTAL DE CONFECÇÃO MANUAL: 435 HORAS",
+        labels: ['Modelagem', 'Corte', 'Bordado', 'Montagem', 'Provas'],
+        values: [65, 40, 180, 95, 55],
+        max: 200,
+        unit: 'h de precisão',
+        color: '#ff3b26'
+      },
+      fibras: {
+        badge: "COMPOSIÇÃO TÊXTIL",
+        footer: "100% MATÉRIAS-PRIMAS ORGÂNICAS & RASTREADAS",
+        labels: ['Seda', 'Cashmere', 'Lã Britânica', 'Algodão Pima'],
+        values: [42, 35, 15, 8],
+        max: 50,
+        unit: '% composição',
+        color: '#ffffff'
       }
-      drawWave();
+    };
+
+    let currentChartMode = 'demanda';
+    let chartHoverIdx = -1;
+
+    function setChartMode(mode) {
+      currentChartMode = mode;
+      const data = chartDatasets[mode];
+      const badgeEl = document.getElementById('chartActiveFilter');
+      const footerEl = document.getElementById('chartFooterText');
+      if (badgeEl) badgeEl.textContent = data.badge;
+      if (footerEl) footerEl.textContent = data.footer;
+
+      ['demanda', 'horas', 'fibras'].forEach(m => {
+        const btn = document.getElementById(`chartBtn-${m}`);
+        if (btn) {
+          if (m === mode) {
+            btn.className = "text-[10px] uppercase px-2.5 py-1 rounded bg-white text-black font-semibold transition-all shadow-sm";
+          } else {
+            btn.className = "text-[10px] uppercase px-2.5 py-1 rounded bg-white/10 text-white/70 hover:bg-white/20 transition-all";
+          }
+        }
+      });
+      renderChart();
+    }
+
+    const telemetryCanvas = document.getElementById('telemetryChart');
+    const chartTooltip = document.getElementById('chartTooltip');
+
+    function renderChart() {
+      if (!telemetryCanvas) return;
+      const ctx = telemetryCanvas.getContext('2d');
+      const w = telemetryCanvas.width;
+      const h = telemetryCanvas.height;
+      const padL = 30;
+      const padR = 20;
+      const padB = 22;
+      const padT = 15;
+      const chartW = w - padL - padR;
+      const chartH = h - padT - padB;
+
+      ctx.clearRect(0, 0, w, h);
+
+      const ds = chartDatasets[currentChartMode];
+      const count = ds.labels.length;
+      const colWidth = chartW / count;
+      const barWidth = Math.max(14, colWidth * 0.48);
+
+      // Linhas horizontais de grid suaves
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 3; i++) {
+        const y = padT + (chartH / 3) * i;
+        ctx.beginPath();
+        ctx.moveTo(padL, y);
+        ctx.lineTo(w - padR, y);
+        ctx.stroke();
+      }
+
+      // Desenhar Barras / Dados
+      ds.values.forEach((val, idx) => {
+        const normH = (val / ds.max) * chartH;
+        const x = padL + idx * colWidth + (colWidth - barWidth) / 2;
+        const y = padT + chartH - normH;
+
+        const isHovered = chartHoverIdx === idx;
+
+        // Gradiente da barra
+        const grad = ctx.createLinearGradient(0, y, 0, y + normH);
+        if (isHovered) {
+          grad.addColorStop(0, '#ffffff');
+          grad.addColorStop(1, ds.color);
+        } else {
+          grad.addColorStop(0, ds.color);
+          grad.addColorStop(1, 'rgba(182, 43, 26, 0.25)');
+        }
+
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(x, y, barWidth, normH, [3, 3, 0, 0]);
+        } else {
+          ctx.rect(x, y, barWidth, normH);
+        }
+        ctx.fill();
+
+        if (isHovered) {
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+
+        // Rótulo no eixo X
+        ctx.fillStyle = isHovered ? '#ffffff' : 'rgba(255, 255, 255, 0.5)';
+        ctx.font = '9px "Inter", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(ds.labels[idx], x + barWidth / 2, h - 6);
+
+        // Valor no topo da barra se estiver com hover
+        if (isHovered) {
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 9px "Inter", sans-serif';
+          ctx.fillText(val + '', x + barWidth / 2, y - 4);
+        }
+      });
+    }
+
+    if (telemetryCanvas) {
+      telemetryCanvas.addEventListener('mousemove', (e) => {
+        const rect = telemetryCanvas.getBoundingClientRect();
+        const clientX = e.clientX - rect.left;
+        const clientY = e.clientY - rect.top;
+        const scaleX = telemetryCanvas.width / rect.width;
+        const scaleY = telemetryCanvas.height / rect.height;
+        const canvasX = clientX * scaleX;
+        const canvasY = clientY * scaleY;
+
+        const ds = chartDatasets[currentChartMode];
+        const count = ds.labels.length;
+        const padL = 30;
+        const padR = 20;
+        const chartW = telemetryCanvas.width - padL - padR;
+        const colWidth = chartW / count;
+
+        let found = -1;
+        if (canvasX >= padL && canvasX <= telemetryCanvas.width - padR) {
+          found = Math.floor((canvasX - padL) / colWidth);
+          if (found >= count) found = -1;
+        }
+
+        if (found !== chartHoverIdx) {
+          chartHoverIdx = found;
+          renderChart();
+        }
+
+        if (found !== -1 && chartTooltip) {
+          const val = ds.values[found];
+          const label = ds.labels[found];
+          chartTooltip.innerHTML = `<strong>${label}</strong>: ${val}${ds.unit}`;
+          chartTooltip.style.left = `${clientX + 10}px`;
+          chartTooltip.style.top = `${clientY - 25}px`;
+          chartTooltip.classList.remove('hidden');
+        } else if (chartTooltip) {
+          chartTooltip.classList.add('hidden');
+        }
+      });
+
+      telemetryCanvas.addEventListener('mouseleave', () => {
+        chartHoverIdx = -1;
+        renderChart();
+        if (chartTooltip) chartTooltip.classList.add('hidden');
+      });
+
+      // Render inicial
+      renderChart();
     }
 
     // ====================================================================
-    // MOTOR DE ÁUDIO INFINITO E 100% CONFIÁVEL (Web Audio API)
+    // MOTOR DE ÁUDIO INSTRUMENTAL AMBIENT (PIANO & HARPA SINTETIZADOS)
     // ====================================================================
     let audioCtx = null;
     let masterGain = null;
     let isAudioPlaying = false;
+    let musicInterval = null;
 
-    function initInfiniteAudio() {
+    // Frequências das notas (Harmonia Dorian Dm9 elegante de Alta-Costura)
+    const instrumentalNotes = [
+      { f: 146.83, dur: 2.8, gain: 0.12, type: 'triangle' }, // D3 (Bass acústico)
+      { f: 220.00, dur: 2.0, gain: 0.08, type: 'sine' },     // A3
+      { f: 349.23, dur: 1.8, gain: 0.07, type: 'sine' },     // F4
+      { f: 440.00, dur: 1.6, gain: 0.06, type: 'sine' },     // A4
+      { f: 523.25, dur: 1.8, gain: 0.05, type: 'sine' },     // C5
+      { f: 659.25, dur: 1.5, gain: 0.04, type: 'sine' },     // E5
+      { f: 116.54, dur: 2.8, gain: 0.12, type: 'triangle' }, // Bb2 (Bass)
+      { f: 293.66, dur: 1.8, gain: 0.08, type: 'sine' },     // D4
+      { f: 392.00, dur: 1.6, gain: 0.06, type: 'sine' },     // G4
+      { f: 440.00, dur: 2.0, gain: 0.07, type: 'sine' },     // A4
+      { f: 110.00, dur: 2.8, gain: 0.12, type: 'triangle' }, // A2 (Bass)
+      { f: 277.18, dur: 1.8, gain: 0.07, type: 'sine' }      // C#4
+    ];
+
+    let noteIdx = 0;
+
+    function playPianoNote(freq, duration = 2.0, maxGain = 0.08, waveType = 'sine') {
+      if (!audioCtx || audioCtx.state !== 'running') return;
+      const now = audioCtx.currentTime;
+
+      // 1. Oscilador Principal
+      const osc = audioCtx.createOscillator();
+      const oscGain = audioCtx.createGain();
+      osc.type = waveType;
+      osc.frequency.setValueAtTime(freq, now);
+
+      // 2. Harmônico Suave (Timbre aveludado de piano de cauda)
+      const harmOsc = audioCtx.createOscillator();
+      const harmGain = audioCtx.createGain();
+      harmOsc.type = 'sine';
+      harmOsc.frequency.setValueAtTime(freq * 2.002, now);
+
+      // Filtro Lowpass suave
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1400, now);
+      filter.frequency.exponentialRampToValueAtTime(400, now + duration);
+
+      // Envelope percussivo de corda acústica
+      oscGain.gain.setValueAtTime(0.0001, now);
+      oscGain.gain.linearRampToValueAtTime(maxGain, now + 0.02);
+      oscGain.gain.exponentialRampToValueAtTime(maxGain * 0.35, now + 0.4);
+      oscGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+      harmGain.gain.setValueAtTime(0.0001, now);
+      harmGain.gain.linearRampToValueAtTime(maxGain * 0.4, now + 0.02);
+      harmGain.gain.exponentialRampToValueAtTime(0.0001, now + (duration * 0.7));
+
+      osc.connect(oscGain);
+      harmOsc.connect(harmGain);
+      oscGain.connect(filter);
+      harmGain.connect(filter);
+      filter.connect(masterGain);
+
+      osc.start(now);
+      harmOsc.start(now);
+      osc.stop(now + duration);
+      harmOsc.stop(now + duration);
+    }
+
+    function scheduleInstrumentalMelody() {
+      if (!isAudioPlaying) return;
+      const note = instrumentalNotes[noteIdx];
+      playPianoNote(note.f, note.dur, note.gain, note.type);
+
+      // Tocar harmônico de complemento em contra-tempo suave
+      if (noteIdx % 3 === 0) {
+        setTimeout(() => {
+          if (isAudioPlaying) {
+            playPianoNote(note.f * 1.5, 1.8, 0.04, 'sine');
+          }
+        }, 400);
+      }
+
+      noteIdx = (noteIdx + 1) % instrumentalNotes.length;
+    }
+
+    function initInstrumentalAudio() {
       if (!audioCtx) {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         audioCtx = new AudioContext();
 
         masterGain = audioCtx.createGain();
         masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+
+        // Linha de Reverb / Eco Acústico Espacial
+        const delay = audioCtx.createDelay();
+        delay.delayTime.setValueAtTime(0.38, audioCtx.currentTime);
+        const delayFeedback = audioCtx.createGain();
+        delayFeedback.gain.setValueAtTime(0.32, audioCtx.currentTime);
+        const delayFilter = audioCtx.createBiquadFilter();
+        delayFilter.frequency.setValueAtTime(1000, audioCtx.currentTime);
+
+        masterGain.connect(delay);
+        delay.connect(delayFilter);
+        delayFilter.connect(delayFeedback);
+        delayFeedback.connect(delay);
+        delay.connect(audioCtx.destination);
         masterGain.connect(audioCtx.destination);
-
-        // 1. Oscilador Sub-Bass Contínuo (55Hz / A1)
-        const subOsc = audioCtx.createOscillator();
-        const subFilter = audioCtx.createBiquadFilter();
-        subOsc.type = 'sawtooth';
-        subOsc.frequency.setValueAtTime(55, audioCtx.currentTime);
-        subFilter.type = 'lowpass';
-        subFilter.frequency.setValueAtTime(120, audioCtx.currentTime);
-        subOsc.connect(subFilter);
-        subFilter.connect(masterGain);
-        subOsc.start();
-
-        // 2. Oscilador Harmônico Quente (110Hz / A2)
-        const harmOsc = audioCtx.createOscillator();
-        const harmGain = audioCtx.createGain();
-        harmOsc.type = 'sine';
-        harmOsc.frequency.setValueAtTime(110, audioCtx.currentTime);
-        harmGain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-        harmOsc.connect(harmGain);
-        harmGain.connect(masterGain);
-        harmOsc.start();
-
-        // 3. Modulação LFO Infinita (Faz o som 'respirar' suavemente a cada 8 segundos)
-        const lfo = audioCtx.createOscillator();
-        const lfoGain = audioCtx.createGain();
-        lfo.frequency.setValueAtTime(0.125, audioCtx.currentTime); // 8s período
-        lfoGain.gain.setValueAtTime(40, audioCtx.currentTime);
-        lfo.connect(lfoGain);
-        lfoGain.connect(subFilter.frequency);
-        lfo.start();
       }
     }
 
     function toggleAudio() {
-      initInfiniteAudio();
+      initInstrumentalAudio();
 
       if (audioCtx.state === 'suspended') {
         audioCtx.resume();
@@ -1382,16 +1636,23 @@
 
       if (!isAudioPlaying) {
         masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
-        masterGain.gain.linearRampToValueAtTime(0.08, audioCtx.currentTime + 1.5);
-        document.getElementById('soundLabel').textContent = 'SOM ATIVADO (55Hz)';
+        masterGain.gain.linearRampToValueAtTime(0.18, audioCtx.currentTime + 1.0);
+        document.getElementById('soundLabel').textContent = 'SOM INSTRUMENTAL (ATIVADO)';
         document.getElementById('soundIndicator').className = 'w-2 h-2 rounded-full bg-crimson-bright animate-ping';
         isAudioPlaying = true;
+        
+        scheduleInstrumentalMelody();
+        musicInterval = setInterval(scheduleInstrumentalMelody, 1600);
       } else {
         masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
-        masterGain.gain.linearRampToValueAtTime(0.0001, audioCtx.currentTime + 1.0);
-        document.getElementById('soundLabel').textContent = 'SOM DESATIVADO';
+        masterGain.gain.linearRampToValueAtTime(0.0001, audioCtx.currentTime + 0.8);
+        document.getElementById('soundLabel').textContent = 'SOM INSTRUMENTAL (OFF)';
         document.getElementById('soundIndicator').className = 'w-2 h-2 rounded-full bg-white/40';
         isAudioPlaying = false;
+        if (musicInterval) {
+          clearInterval(musicInterval);
+          musicInterval = null;
+        }
       }
     }
     document.getElementById('soundToggleBtn').addEventListener('click', toggleAudio);
